@@ -28,7 +28,7 @@ body {
 
 h1 {
     position: absolute;
-    top: 40%;
+    top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 48px;
@@ -37,7 +37,7 @@ h1 {
 }
 
 .rose {
-    font-size: 40px;
+    font-size: 38px;
     transition: transform 0.3s;
 }
 
@@ -84,21 +84,6 @@ button {
     cursor: pointer;
     margin-top: 20px;
 }
-
-button:hover {
-    background: #80002a;
-}
-
-.heart {
-    position: absolute;
-    font-size: 20px;
-    animation: explode 1.5s ease-out forwards;
-}
-
-@keyframes explode {
-    from { transform: translate(0,0); opacity: 1; }
-    to { transform: translate(var(--x), var(--y)); opacity: 0; }
-}
 </style>
 </head>
 
@@ -128,31 +113,27 @@ const pickupLines = [
 const totalRoses = 12;
 const centerX = window.innerWidth / 2;
 const centerY = window.innerHeight / 2;
-
-const safeWidth = 500;
-const safeHeight = 200;
+const scale = 15; // size of heart
 
 for (let i = 0; i < totalRoses; i++) {
 
-    const wrapper = document.createElement("div");
-    wrapper.style.position = "absolute";
-    wrapper.style.textAlign = "center";
-    wrapper.style.cursor = "pointer";
+    const t = Math.PI * 2 * (i / totalRoses);
 
-    let x, y;
-
-    do {
-        x = Math.random() * window.innerWidth;
-        y = Math.random() * window.innerHeight;
-    } while (
-        x > centerX - safeWidth/2 &&
-        x < centerX + safeWidth/2 &&
-        y > centerY - safeHeight/2 &&
-        y < centerY + safeHeight/2
+    // Heart shape formula
+    const x = scale * 16 * Math.pow(Math.sin(t), 3);
+    const y = -scale * (
+        13 * Math.cos(t)
+        - 5 * Math.cos(2 * t)
+        - 2 * Math.cos(3 * t)
+        - Math.cos(4 * t)
     );
 
-    wrapper.style.left = x + "px";
-    wrapper.style.top = y + "px";
+    const wrapper = document.createElement("div");
+    wrapper.style.position = "absolute";
+    wrapper.style.left = centerX + x + "px";
+    wrapper.style.top = centerY + y - 120 + "px"; // shift up to avoid text
+    wrapper.style.textAlign = "center";
+    wrapper.style.cursor = "pointer";
 
     const rose = document.createElement("div");
     rose.className = "rose";
@@ -172,50 +153,4 @@ for (let i = 0; i < totalRoses; i++) {
             document.getElementById("line").innerHTML =
                 "Ek rose ko main kya hi ek rose du… you deserve a whole garden 🌹❤️ <br><br>– Anurag";
 
-            document.getElementById("photoContainer").innerHTML =
-                '<img src="nirali.jpg" class="photo">';
-
-            showFireworks();
-            switchPage();
-        };
-    } else {
-        wrapper.onclick = function() {
-            const randomLine = pickupLines[Math.floor(Math.random() * pickupLines.length)];
-            document.getElementById("line").innerHTML = randomLine;
-            document.getElementById("photoContainer").innerHTML = "";
-            showFireworks();
-            switchPage();
-        };
-    }
-
-    document.getElementById("mainPage").appendChild(wrapper);
-}
-
-function switchPage() {
-    document.getElementById("mainPage").classList.remove("active");
-    document.getElementById("pickupPage").classList.add("active");
-}
-
-function goBack() {
-    document.getElementById("pickupPage").classList.remove("active");
-    document.getElementById("mainPage").classList.add("active");
-    document.getElementById("photoContainer").innerHTML = "";
-}
-
-function showFireworks() {
-    for (let i = 0; i < 40; i++) {
-        const heart = document.createElement("div");
-        heart.className = "heart";
-        heart.innerHTML = "💖";
-        heart.style.left = Math.random() * window.innerWidth + "px";
-        heart.style.top = Math.random() * window.innerHeight + "px";
-        heart.style.setProperty("--x", (Math.random() * 400 - 200) + "px");
-        heart.style.setProperty("--y", (Math.random() * 400 - 200) + "px");
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 1500);
-    }
-}
-</script>
-
-</body>
-</html>
+            document.getElementById("photoContainer").
