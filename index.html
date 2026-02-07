@@ -11,9 +11,10 @@ body {
     padding: 0;
     overflow: hidden;
     font-family: Arial, sans-serif;
-    background: #fdf2f5;
+    background: linear-gradient(to right, #ffe6ec, #ffd6e0);
 }
 
+/* Pages */
 .page {
     display: none;
     width: 100vw;
@@ -25,6 +26,7 @@ body {
     display: block;
 }
 
+/* Center Title */
 h1 {
     position: absolute;
     top: 40%;
@@ -36,11 +38,17 @@ h1 {
     text-align: center;
 }
 
-/* Rose styling */
+/* Roses */
 .rose-wrapper {
     position: absolute;
     text-align: center;
     cursor: pointer;
+    animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%,100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
 }
 
 .rose {
@@ -93,6 +101,18 @@ button {
     background: #ff4d6d;
     color: white;
     cursor: pointer;
+}
+
+/* Heart Fireworks */
+.heart {
+    position: absolute;
+    font-size: 20px;
+    animation: explode 1.2s ease-out forwards;
+}
+
+@keyframes explode {
+    0% { transform: scale(0); opacity: 1; }
+    100% { transform: scale(2) translate(var(--x), var(--y)); opacity: 0; }
 }
 </style>
 </head>
@@ -151,28 +171,41 @@ for (let i = 0; i < totalRoses; i++) {
     wrapper.appendChild(rose);
     wrapper.appendChild(number);
 
-    if (i === totalRoses - 1) {
-        rose.style.fontSize = "42px";
+    wrapper.onclick = function(e) {
 
-        wrapper.onclick = function() {
+        showFireworks(e.pageX, e.pageY);
+
+        if (i === totalRoses - 1) {
             document.getElementById("line").innerHTML =
                 "Ek rose ko main kya hi ek rose du… you deserve a whole garden 🌹❤️ <br><br>– Anurag";
 
             document.getElementById("photoContainer").innerHTML =
                 '<img src="nirali.jpg" class="photo">';
-
-            switchPage();
-        };
-    } else {
-        wrapper.onclick = function() {
+        } else {
             const randomLine = pickupLines[Math.floor(Math.random() * pickupLines.length)];
             document.getElementById("line").innerHTML = randomLine;
             document.getElementById("photoContainer").innerHTML = "";
-            switchPage();
-        };
-    }
+        }
+
+        switchPage();
+    };
 
     document.getElementById("mainPage").appendChild(wrapper);
+}
+
+function showFireworks(x, y) {
+    for (let i = 0; i < 30; i++) {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerHTML = "💖";
+        heart.style.left = x + "px";
+        heart.style.top = y + "px";
+        heart.style.setProperty("--x", (Math.random() * 200 - 100) + "px");
+        heart.style.setProperty("--y", (Math.random() * 200 - 100) + "px");
+        document.body.appendChild(heart);
+
+        setTimeout(() => heart.remove(), 1200);
+    }
 }
 
 function switchPage() {
@@ -184,6 +217,7 @@ function goBack() {
     document.getElementById("pickupPage").classList.remove("active");
     document.getElementById("mainPage").classList.add("active");
 }
+
 </script>
 
 </body>
