@@ -4,47 +4,63 @@
     <title>Happy Rose Day 🌹</title>
     <style>
         body {
-            background: linear-gradient(to right, #ffdde1, #ee9ca7);
-            text-align: center;
-            font-family: Arial, sans-serif;
-            padding-top: 60px;
+            margin: 0;
             overflow: hidden;
+            background: linear-gradient(to right, #ffdde1, #ee9ca7);
+            font-family: Arial, sans-serif;
+            text-align: center;
         }
 
         h1 {
+            margin-top: 30px;
             color: #b3003b;
         }
 
+        .page {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .active {
+            display: block;
+        }
+
         .rose {
-            font-size: 45px;
+            position: absolute;
+            font-size: 40px;
             cursor: pointer;
-            margin: 20px;
-            display: inline-block;
-            transition: transform 0.2s;
+            animation: float 4s ease-in-out infinite;
         }
 
-        .rose:hover {
-            transform: scale(1.3);
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
         }
 
-        #line {
-            margin-top: 30px;
-            font-size: 22px;
+        .pickup-line {
+            margin-top: 120px;
+            font-size: 26px;
             color: #660033;
-            min-height: 60px;
+            padding: 20px;
         }
 
-        .final {
-            font-size: 32px;
-            color: #ff004c;
-            font-weight: bold;
+        .btn {
+            padding: 12px 25px;
+            font-size: 18px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            background-color: #ff4d6d;
+            color: white;
             margin-top: 20px;
-            animation: glow 1.5s infinite alternate;
         }
 
-        @keyframes glow {
-            from { text-shadow: 0 0 5px #ff4d6d; }
-            to { text-shadow: 0 0 25px #ff004c; }
+        .btn:hover {
+            background-color: #e6004c;
         }
 
         .heart {
@@ -54,85 +70,75 @@
         }
 
         @keyframes explode {
-            0% {
-                transform: scale(0) translate(0,0);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(2) translate(var(--x), var(--y));
-                opacity: 0;
-            }
-        }
-
-        .photo {
-            width: 220px;
-            border-radius: 20px;
-            margin-top: 20px;
-            opacity: 0;
-            transition: opacity 2s ease;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-        }
-
-        .show {
-            opacity: 1;
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(2) translate(var(--x), var(--y)); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
+<!-- MAIN PAGE -->
+<div id="mainPage" class="page active">
     <h1>Happy Rose Day Nirali 🌹</h1>
-    <p>Tap the roses one by one 💖</p>
+    <p>Pick a rose 💖</p>
+</div>
 
-    <div id="roseArea">
-        <span class="rose" onclick="nextRose()">🌹</span>
-    </div>
+<!-- PICKUP PAGE -->
+<div id="pickupPage" class="page">
+    <div class="pickup-line" id="line"></div>
+    <button class="btn" onclick="goBack()">Pick another rose 🌹</button>
+</div>
 
-    <div id="line"></div>
+<script>
+    const pickupLines = [
+        "Are you a rose? Because you made my world bloom 🌹💖",
+        "If beauty had a name, it would be Nirali ✨😍",
+        "You’re rare, beautiful, and unforgettable 💕🌸",
+        "Some roses are special… like you 😉🌹"
+    ];
 
-    <script>
-        const pickupLines = [
-            "Are you a rose? Because you made my world bloom 🌹❤️",
-            "If beauty had a name, it would be Nirali ✨",
-            "You’re rare, beautiful, and unforgettable 💖",
-            "Every rose has thorns, but you only have charm 😉"
-        ];
+    // Create floating roses
+    for (let i = 0; i < 8; i++) {
+        const rose = document.createElement("div");
+        rose.className = "rose";
+        rose.innerHTML = "🌹";
+        rose.style.left = Math.random() * 90 + "vw";
+        rose.style.top = Math.random() * 70 + 120 + "px";
+        rose.style.animationDelay = Math.random() * 2 + "s";
+        rose.onclick = openPickup;
+        document.getElementById("mainPage").appendChild(rose);
+    }
 
-        let step = 0;
+    function openPickup() {
+        const randomLine = pickupLines[Math.floor(Math.random() * pickupLines.length)];
+        document.getElementById("line").innerHTML = randomLine;
 
-        function nextRose() {
-            if (step < pickupLines.length) {
-                document.getElementById("line").innerHTML =
-                    pickupLines[step] + "<br><br>Tap the next rose 🌹";
-                step++;
-            } else {
-                document.getElementById("line").innerHTML =
-                    `<div class="final">🌹 From Anurag ❤️ 🌹</div>
-                     <img src="nirali.jpg" class="photo" id="herPhoto">`;
+        showFireworks();
 
-                document.getElementById("roseArea").innerHTML = "";
-                startHeartFireworks();
+        document.getElementById("mainPage").classList.remove("active");
+        document.getElementById("pickupPage").classList.add("active");
+    }
 
-                setTimeout(() => {
-                    document.getElementById("herPhoto").classList.add("show");
-                }, 800);
-            }
+    function goBack() {
+        document.getElementById("pickupPage").classList.remove("active");
+        document.getElementById("mainPage").classList.add("active");
+    }
+
+    function showFireworks() {
+        for (let i = 0; i < 40; i++) {
+            const heart = document.createElement("div");
+            heart.className = "heart";
+            heart.innerHTML = "💖";
+            heart.style.left = Math.random() * window.innerWidth + "px";
+            heart.style.top = Math.random() * window.innerHeight + "px";
+            heart.style.setProperty("--x", (Math.random() * 400 - 200) + "px");
+            heart.style.setProperty("--y", (Math.random() * 400 - 200) + "px");
+            document.body.appendChild(heart);
+
+            setTimeout(() => heart.remove(), 1500);
         }
-
-        function startHeartFireworks() {
-            for (let i = 0; i < 60; i++) {
-                const heart = document.createElement("div");
-                heart.className = "heart";
-                heart.innerHTML = "💖";
-                heart.style.left = Math.random() * window.innerWidth + "px";
-                heart.style.top = Math.random() * window.innerHeight + "px";
-                heart.style.setProperty("--x", (Math.random() * 400 - 200) + "px");
-                heart.style.setProperty("--y", (Math.random() * 400 - 200) + "px");
-                document.body.appendChild(heart);
-
-                setTimeout(() => heart.remove(), 1500);
-            }
-        }
-    </script>
+    }
+</script>
 
 </body>
 </html>
