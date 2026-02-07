@@ -11,11 +11,6 @@
             text-align: center;
         }
 
-        h1 {
-            margin-top: 30px;
-            color: #b3003b;
-        }
-
         .page {
             display: none;
             width: 100%;
@@ -26,7 +21,16 @@
         }
 
         .active {
-            display: block;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        h1 {
+            color: #b3003b;
+            font-size: 42px;
+            z-index: 2;
         }
 
         .rose {
@@ -42,10 +46,11 @@
         }
 
         .pickup-line {
-            margin-top: 120px;
+            margin-top: 40px;
             font-size: 26px;
             color: #660033;
             padding: 20px;
+            text-align: center;
         }
 
         .btn {
@@ -73,6 +78,16 @@
             0% { transform: scale(0); opacity: 1; }
             100% { transform: scale(2) translate(var(--x), var(--y)); opacity: 0; }
         }
+
+        .photo {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-top: 20px;
+            border: 5px solid #b3003b;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
     </style>
 </head>
 <body>
@@ -80,41 +95,69 @@
 <!-- MAIN PAGE -->
 <div id="mainPage" class="page active">
     <h1>Happy Rose Day Nirali 🌹</h1>
-    <p>Pick a rose 💖</p>
 </div>
 
 <!-- PICKUP PAGE -->
 <div id="pickupPage" class="page">
     <div class="pickup-line" id="line"></div>
+    <div id="photoContainer"></div>
     <button class="btn" onclick="goBack()">Pick another rose 🌹</button>
 </div>
 
 <script>
     const pickupLines = [
-        "Are you a rose? Because you made my world bloom 🌹💖",
-        "If beauty had a name, it would be Nirali ✨😍",
-        "You’re rare, beautiful, and unforgettable 💕🌸",
-        "Some roses are special… like you 😉🌹"
+        "Are you a rose? Kyunki tum meri duniya ko khilaa deti ho 🌹",
+        "When you smile, dil automatically happy ho jata hai ❤️",
+        "Tum sirf beautiful nahi ho… you’re truly special ✨",
+        "Every rose reminds me of you — soft, sweet, and unforgettable 🌸",
+        "Sach kahun? You make my world brighter 💖",
+        "Tumhari smile is my favorite notification 😌",
+        "You don’t just look pretty… tum dil bhi jeet leti ho 💕"
     ];
 
-    // Create floating roses
-    for (let i = 0; i < 8; i++) {
+    const totalRoses = 12;
+
+    for (let i = 0; i < totalRoses; i++) {
         const rose = document.createElement("div");
         rose.className = "rose";
         rose.innerHTML = "🌹";
-        rose.style.left = Math.random() * 90 + "vw";
-        rose.style.top = Math.random() * 70 + 120 + "px";
-        rose.style.animationDelay = Math.random() * 2 + "s";
-        rose.onclick = openPickup;
+
+        const angle = (i / totalRoses) * 2 * Math.PI;
+        const radius = 200;
+
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+
+        rose.style.left = (centerX + radius * Math.cos(angle)) + "px";
+        rose.style.top = (centerY + radius * Math.sin(angle)) + "px";
+
+        if (i === totalRoses - 1) {
+            rose.style.fontSize = "50px";
+            rose.onclick = function () {
+                document.getElementById("line").innerHTML =
+                    "Ek rose ko main kya hi ek rose du… you deserve a whole garden 🌹❤️ <br><br>– Anurag";
+
+                // Show her photo
+                document.getElementById("photoContainer").innerHTML =
+                    '<img src="nirali.jpg" class="photo">';  // Change file name here
+
+                showFireworks();
+                switchPage();
+            };
+        } else {
+            rose.onclick = function () {
+                const randomLine = pickupLines[Math.floor(Math.random() * pickupLines.length)];
+                document.getElementById("line").innerHTML = randomLine;
+                document.getElementById("photoContainer").innerHTML = "";
+                showFireworks();
+                switchPage();
+            };
+        }
+
         document.getElementById("mainPage").appendChild(rose);
     }
 
-    function openPickup() {
-        const randomLine = pickupLines[Math.floor(Math.random() * pickupLines.length)];
-        document.getElementById("line").innerHTML = randomLine;
-
-        showFireworks();
-
+    function switchPage() {
         document.getElementById("mainPage").classList.remove("active");
         document.getElementById("pickupPage").classList.add("active");
     }
@@ -122,6 +165,7 @@
     function goBack() {
         document.getElementById("pickupPage").classList.remove("active");
         document.getElementById("mainPage").classList.add("active");
+        document.getElementById("photoContainer").innerHTML = "";
     }
 
     function showFireworks() {
