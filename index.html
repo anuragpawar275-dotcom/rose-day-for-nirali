@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Happy Rose Day 🌹</title>
+    <style>
+        body {
+            background: linear-gradient(to right, #ffdde1, #ee9ca7);
+            text-align: center;
+            font-family: Arial, sans-serif;
+            padding-top: 60px;
+            overflow: hidden;
+        }
+
+        h1 {
+            color: #b3003b;
+        }
+
+        .rose {
+            font-size: 45px;
+            cursor: pointer;
+            margin: 20px;
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+
+        .rose:hover {
+            transform: scale(1.3);
+        }
+
+        #line {
+            margin-top: 30px;
+            font-size: 22px;
+            color: #660033;
+            min-height: 60px;
+        }
+
+        .final {
+            font-size: 32px;
+            color: #ff004c;
+            font-weight: bold;
+            margin-top: 20px;
+            animation: glow 1.5s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 5px #ff4d6d; }
+            to { text-shadow: 0 0 25px #ff004c; }
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 22px;
+            animation: explode 1.5s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(0) translate(0,0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2) translate(var(--x), var(--y));
+                opacity: 0;
+            }
+        }
+
+        .photo {
+            width: 220px;
+            border-radius: 20px;
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 2s ease;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+
+        .show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Happy Rose Day Nirali 🌹</h1>
+    <p>Tap the roses one by one 💖</p>
+
+    <div id="roseArea">
+        <span class="rose" onclick="nextRose()">🌹</span>
+    </div>
+
+    <div id="line"></div>
+
+    <script>
+        const pickupLines = [
+            "Are you a rose? Because you made my world bloom 🌹❤️",
+            "If beauty had a name, it would be Nirali ✨",
+            "You’re rare, beautiful, and unforgettable 💖",
+            "Every rose has thorns, but you only have charm 😉"
+        ];
+
+        let step = 0;
+
+        function nextRose() {
+            if (step < pickupLines.length) {
+                document.getElementById("line").innerHTML =
+                    pickupLines[step] + "<br><br>Tap the next rose 🌹";
+                step++;
+            } else {
+                document.getElementById("line").innerHTML =
+                    `<div class="final">🌹 From Anurag ❤️ 🌹</div>
+                     <img src="nirali.jpg" class="photo" id="herPhoto">`;
+
+                document.getElementById("roseArea").innerHTML = "";
+                startHeartFireworks();
+
+                setTimeout(() => {
+                    document.getElementById("herPhoto").classList.add("show");
+                }, 800);
+            }
+        }
+
+        function startHeartFireworks() {
+            for (let i = 0; i < 60; i++) {
+                const heart = document.createElement("div");
+                heart.className = "heart";
+                heart.innerHTML = "💖";
+                heart.style.left = Math.random() * window.innerWidth + "px";
+                heart.style.top = Math.random() * window.innerHeight + "px";
+                heart.style.setProperty("--x", (Math.random() * 400 - 200) + "px");
+                heart.style.setProperty("--y", (Math.random() * 400 - 200) + "px");
+                document.body.appendChild(heart);
+
+                setTimeout(() => heart.remove(), 1500);
+            }
+        }
+    </script>
+
+</body>
+</html>
